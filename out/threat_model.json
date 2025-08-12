@@ -1,0 +1,614 @@
+{
+  "model": {
+    "title": "IoT Threat Model (Sample)",
+    "boundaries": [
+      "Field / Device",
+      "Edge / Gateway",
+      "Cloud / Platform"
+    ],
+    "assets": [
+      {
+        "id": "device01",
+        "name": "Field Device",
+        "type": "device",
+        "boundary": "Field / Device",
+        "shape": "stadium"
+      },
+      {
+        "id": "gateway01",
+        "name": "IoT Gateway",
+        "type": "gateway",
+        "boundary": "Edge / Gateway"
+      },
+      {
+        "id": "ingest01",
+        "name": "Ingestion Service",
+        "type": "cloud_service",
+        "boundary": "Cloud / Platform"
+      },
+      {
+        "id": "iot_hub01",
+        "name": "IoT Hub",
+        "type": "cloud_service",
+        "boundary": "Cloud / Platform"
+      },
+      {
+        "id": "datalake01",
+        "name": "Data Lake",
+        "type": "datastore",
+        "boundary": "Cloud / Platform"
+      },
+      {
+        "id": "portal01",
+        "name": "Admin Portal",
+        "type": "portal",
+        "boundary": "Cloud / Platform",
+        "shape": "stadium"
+      }
+    ],
+    "flows": [
+      {
+        "from": "device01",
+        "to": "gateway01",
+        "protocol": "MQTT over TLS",
+        "label": "Telemetry"
+      },
+      {
+        "from": "gateway01",
+        "to": "ingest01",
+        "protocol": "HTTPS",
+        "label": "Ingest API"
+      },
+      {
+        "from": "ingest01",
+        "to": "datalake01",
+        "protocol": "Private Link",
+        "label": "Store"
+      },
+      {
+        "from": "iot_hub01",
+        "to": "datalake01",
+        "protocol": "Event Routing",
+        "label": "Events"
+      },
+      {
+        "from": "portal01",
+        "to": "ingest01",
+        "protocol": "HTTPS",
+        "label": "Management"
+      }
+    ]
+  },
+  "threats": [
+    {
+      "threat_id": "device_firmware_vuln",
+      "category": "Device-Level",
+      "title": "Firmware vulnerabilities",
+      "description": "Unsigned or vulnerable firmware enables persistence and device takeover.",
+      "mitigations": [
+        "Secure Boot with verified boot chain",
+        "Signed firmware and strict versioning",
+        "Secure OTA updates with rollback protection",
+        "Regular vulnerability scanning and SBOM management"
+      ],
+      "target_type": "asset",
+      "target_id": "device01",
+      "target_name": "Field Device"
+    },
+    {
+      "threat_id": "device_physical_tamper",
+      "category": "Device-Level",
+      "title": "Physical tampering",
+      "description": "Adversaries can access debug ports, extract secrets, or alter hardware.",
+      "mitigations": [
+        "Tamper-evident and tamper-resistant enclosures",
+        "Disable/lock debug interfaces in production",
+        "Secure elements/TPM for key storage",
+        "Tamper sensors with alerting and zeroization"
+      ],
+      "target_type": "asset",
+      "target_id": "device01",
+      "target_name": "Field Device"
+    },
+    {
+      "threat_id": "device_physical_tamper",
+      "category": "Device-Level",
+      "title": "Physical tampering",
+      "description": "Adversaries can access debug ports, extract secrets, or alter hardware.",
+      "mitigations": [
+        "Tamper-evident and tamper-resistant enclosures",
+        "Disable/lock debug interfaces in production",
+        "Secure elements/TPM for key storage",
+        "Tamper sensors with alerting and zeroization"
+      ],
+      "target_type": "asset",
+      "target_id": "gateway01",
+      "target_name": "IoT Gateway"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "asset",
+      "target_id": "gateway01",
+      "target_name": "IoT Gateway"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "asset",
+      "target_id": "gateway01",
+      "target_name": "IoT Gateway"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "asset",
+      "target_id": "ingest01",
+      "target_name": "Ingestion Service"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "asset",
+      "target_id": "ingest01",
+      "target_name": "Ingestion Service"
+    },
+    {
+      "threat_id": "platform_cloud_vuln",
+      "category": "Platform",
+      "title": "Cloud infrastructure vulnerabilities",
+      "description": "Misconfiguration or unpatched components enabling privilege escalation or breach.",
+      "mitigations": [
+        "Least-privilege IAM and role isolation",
+        "Network segmentation and private endpoints",
+        "Continuous patching and managed services",
+        "CSPM, SIEM, and runtime monitoring"
+      ],
+      "target_type": "asset",
+      "target_id": "ingest01",
+      "target_name": "Ingestion Service"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "asset",
+      "target_id": "iot_hub01",
+      "target_name": "IoT Hub"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "asset",
+      "target_id": "iot_hub01",
+      "target_name": "IoT Hub"
+    },
+    {
+      "threat_id": "platform_cloud_vuln",
+      "category": "Platform",
+      "title": "Cloud infrastructure vulnerabilities",
+      "description": "Misconfiguration or unpatched components enabling privilege escalation or breach.",
+      "mitigations": [
+        "Least-privilege IAM and role isolation",
+        "Network segmentation and private endpoints",
+        "Continuous patching and managed services",
+        "CSPM, SIEM, and runtime monitoring"
+      ],
+      "target_type": "asset",
+      "target_id": "iot_hub01",
+      "target_name": "IoT Hub"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "asset",
+      "target_id": "datalake01",
+      "target_name": "Data Lake"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "asset",
+      "target_id": "datalake01",
+      "target_name": "Data Lake"
+    },
+    {
+      "threat_id": "platform_cloud_vuln",
+      "category": "Platform",
+      "title": "Cloud infrastructure vulnerabilities",
+      "description": "Misconfiguration or unpatched components enabling privilege escalation or breach.",
+      "mitigations": [
+        "Least-privilege IAM and role isolation",
+        "Network segmentation and private endpoints",
+        "Continuous patching and managed services",
+        "CSPM, SIEM, and runtime monitoring"
+      ],
+      "target_type": "asset",
+      "target_id": "datalake01",
+      "target_name": "Data Lake"
+    },
+    {
+      "threat_id": "platform_cloud_vuln",
+      "category": "Platform",
+      "title": "Cloud infrastructure vulnerabilities",
+      "description": "Misconfiguration or unpatched components enabling privilege escalation or breach.",
+      "mitigations": [
+        "Least-privilege IAM and role isolation",
+        "Network segmentation and private endpoints",
+        "Continuous patching and managed services",
+        "CSPM, SIEM, and runtime monitoring"
+      ],
+      "target_type": "asset",
+      "target_id": "portal01",
+      "target_name": "Admin Portal"
+    },
+    {
+      "threat_id": "comm_eavesdropping",
+      "category": "Communication",
+      "title": "Eavesdropping",
+      "description": "Unencrypted or poorly configured links expose data in transit.",
+      "mitigations": [
+        "TLS 1.2+ with modern ciphers",
+        "Mutual TLS for device authentication",
+        "WPA3 or cellular with SIM-based auth",
+        "Rotate keys; avoid static shared secrets"
+      ],
+      "target_type": "flow",
+      "target_id": "device01->gateway01",
+      "target_name": "Telemetry"
+    },
+    {
+      "threat_id": "comm_mitm",
+      "category": "Communication",
+      "title": "Man-in-the-middle",
+      "description": "Traffic interception or impersonation between nodes.",
+      "mitigations": [
+        "Certificate pinning and strict hostname verification",
+        "Mutual TLS and hardware-backed keys",
+        "Use message authentication (HMAC/MAC) for app-layer integrity",
+        "Replay protection (nonces, timestamps)"
+      ],
+      "target_type": "flow",
+      "target_id": "device01->gateway01",
+      "target_name": "Telemetry"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "flow",
+      "target_id": "device01->gateway01",
+      "target_name": "Telemetry"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "flow",
+      "target_id": "device01->gateway01",
+      "target_name": "Telemetry"
+    },
+    {
+      "threat_id": "comm_eavesdropping",
+      "category": "Communication",
+      "title": "Eavesdropping",
+      "description": "Unencrypted or poorly configured links expose data in transit.",
+      "mitigations": [
+        "TLS 1.2+ with modern ciphers",
+        "Mutual TLS for device authentication",
+        "WPA3 or cellular with SIM-based auth",
+        "Rotate keys; avoid static shared secrets"
+      ],
+      "target_type": "flow",
+      "target_id": "gateway01->ingest01",
+      "target_name": "Ingest API"
+    },
+    {
+      "threat_id": "comm_mitm",
+      "category": "Communication",
+      "title": "Man-in-the-middle",
+      "description": "Traffic interception or impersonation between nodes.",
+      "mitigations": [
+        "Certificate pinning and strict hostname verification",
+        "Mutual TLS and hardware-backed keys",
+        "Use message authentication (HMAC/MAC) for app-layer integrity",
+        "Replay protection (nonces, timestamps)"
+      ],
+      "target_type": "flow",
+      "target_id": "gateway01->ingest01",
+      "target_name": "Ingest API"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "flow",
+      "target_id": "gateway01->ingest01",
+      "target_name": "Ingest API"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "flow",
+      "target_id": "gateway01->ingest01",
+      "target_name": "Ingest API"
+    },
+    {
+      "threat_id": "comm_eavesdropping",
+      "category": "Communication",
+      "title": "Eavesdropping",
+      "description": "Unencrypted or poorly configured links expose data in transit.",
+      "mitigations": [
+        "TLS 1.2+ with modern ciphers",
+        "Mutual TLS for device authentication",
+        "WPA3 or cellular with SIM-based auth",
+        "Rotate keys; avoid static shared secrets"
+      ],
+      "target_type": "flow",
+      "target_id": "ingest01->datalake01",
+      "target_name": "Store"
+    },
+    {
+      "threat_id": "comm_mitm",
+      "category": "Communication",
+      "title": "Man-in-the-middle",
+      "description": "Traffic interception or impersonation between nodes.",
+      "mitigations": [
+        "Certificate pinning and strict hostname verification",
+        "Mutual TLS and hardware-backed keys",
+        "Use message authentication (HMAC/MAC) for app-layer integrity",
+        "Replay protection (nonces, timestamps)"
+      ],
+      "target_type": "flow",
+      "target_id": "ingest01->datalake01",
+      "target_name": "Store"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "flow",
+      "target_id": "ingest01->datalake01",
+      "target_name": "Store"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "flow",
+      "target_id": "ingest01->datalake01",
+      "target_name": "Store"
+    },
+    {
+      "threat_id": "comm_eavesdropping",
+      "category": "Communication",
+      "title": "Eavesdropping",
+      "description": "Unencrypted or poorly configured links expose data in transit.",
+      "mitigations": [
+        "TLS 1.2+ with modern ciphers",
+        "Mutual TLS for device authentication",
+        "WPA3 or cellular with SIM-based auth",
+        "Rotate keys; avoid static shared secrets"
+      ],
+      "target_type": "flow",
+      "target_id": "iot_hub01->datalake01",
+      "target_name": "Events"
+    },
+    {
+      "threat_id": "comm_mitm",
+      "category": "Communication",
+      "title": "Man-in-the-middle",
+      "description": "Traffic interception or impersonation between nodes.",
+      "mitigations": [
+        "Certificate pinning and strict hostname verification",
+        "Mutual TLS and hardware-backed keys",
+        "Use message authentication (HMAC/MAC) for app-layer integrity",
+        "Replay protection (nonces, timestamps)"
+      ],
+      "target_type": "flow",
+      "target_id": "iot_hub01->datalake01",
+      "target_name": "Events"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "flow",
+      "target_id": "iot_hub01->datalake01",
+      "target_name": "Events"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "flow",
+      "target_id": "iot_hub01->datalake01",
+      "target_name": "Events"
+    },
+    {
+      "threat_id": "comm_eavesdropping",
+      "category": "Communication",
+      "title": "Eavesdropping",
+      "description": "Unencrypted or poorly configured links expose data in transit.",
+      "mitigations": [
+        "TLS 1.2+ with modern ciphers",
+        "Mutual TLS for device authentication",
+        "WPA3 or cellular with SIM-based auth",
+        "Rotate keys; avoid static shared secrets"
+      ],
+      "target_type": "flow",
+      "target_id": "portal01->ingest01",
+      "target_name": "Management"
+    },
+    {
+      "threat_id": "comm_mitm",
+      "category": "Communication",
+      "title": "Man-in-the-middle",
+      "description": "Traffic interception or impersonation between nodes.",
+      "mitigations": [
+        "Certificate pinning and strict hostname verification",
+        "Mutual TLS and hardware-backed keys",
+        "Use message authentication (HMAC/MAC) for app-layer integrity",
+        "Replay protection (nonces, timestamps)"
+      ],
+      "target_type": "flow",
+      "target_id": "portal01->ingest01",
+      "target_name": "Management"
+    },
+    {
+      "threat_id": "data_privacy",
+      "category": "Data",
+      "title": "Privacy breaches",
+      "description": "Sensitive data exposure or over-collection enabling re-identification.",
+      "mitigations": [
+        "Data minimization and purpose limitation",
+        "Field-level encryption and tokenization",
+        "Access controls with least privilege",
+        "Anonymization/pseudonymization where possible"
+      ],
+      "target_type": "flow",
+      "target_id": "portal01->ingest01",
+      "target_name": "Management"
+    },
+    {
+      "threat_id": "data_integrity",
+      "category": "Data",
+      "title": "Data integrity compromise",
+      "description": "Unauthorized or undetected modification of data in transit or at rest.",
+      "mitigations": [
+        "Cryptographic integrity (HMAC, signatures)",
+        "Immutable/append-only logs and versioned storage",
+        "Checksums and validation on ingestion",
+        "Strong change control and auditing"
+      ],
+      "target_type": "flow",
+      "target_id": "portal01->ingest01",
+      "target_name": "Management"
+    }
+  ],
+  "diagram": {
+    "format": "mermaid",
+    "content": "flowchart LR\n  %% Trust boundaries as subgraphs\n  subgraph _Field___Device[Field / Device]\n    _device01([Field Device\\n(device)])\n  end\n  subgraph _Edge___Gateway[Edge / Gateway]\n    _gateway01[IoT Gateway\\n(gateway)]\n  end\n  subgraph _Cloud___Platform[Cloud / Platform]\n    _ingest01[Ingestion Service\\n(cloud_service)]\n    _iot_hub01[IoT Hub\\n(cloud_service)]\n    _datalake01[Data Lake\\n(datastore)]\n    _portal01([Admin Portal\\n(portal)])\n  end\n  %% Data flows\n  _device01 -- \"MQTT over TLS\" --> _gateway01\n  _gateway01 -- \"HTTPS\" --> _ingest01\n  _ingest01 -- \"Private Link\" --> _datalake01\n  _iot_hub01 -- \"Event Routing\" --> _datalake01\n  _portal01 -- \"HTTPS\" --> _ingest01\n  style _Field___Device fill:#f2f7ff,stroke:#999,stroke-width:1px\n  style _Edge___Gateway fill:#f7fff2,stroke:#999,stroke-width:1px\n  style _Cloud___Platform fill:#fff7f2,stroke:#999,stroke-width:1px"
+  },
+  "generated_at": "2025-08-12T22:35:35.243180Z"
+}

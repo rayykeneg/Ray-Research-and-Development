@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Threat Model (Sample)</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 24px; }
+    h1, h2, h3 { margin: 16px 0 8px; }
+    .diagram { border: 1px solid #e0e0e0; border-radius: 8px; padding: 8px; background: #fff; }
+    .threats { margin-top: 24px; }
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 6px; color: #fff; }
+    .Device-Level { background: #1f77b4; }
+    .Communication { background: #2ca02c; }
+    .Data { background: #ff7f0e; }
+    .Platform { background: #9467bd; }
+    .mitigations { margin: 4px 0 12px 0; }
+  </style>
+</head>
+<body>
+  <h2>IoT Threat Model (Sample)</h2>
+  <div>Generated: 2025-08-12T22:35:35.242389Z</div>
+
+  <div class="diagram">
+    <pre class="mermaid">flowchart LR
+  %% Trust boundaries as subgraphs
+  subgraph _Field___Device[Field / Device]
+    _device01([Field Device\n(device)])
+  end
+  subgraph _Edge___Gateway[Edge / Gateway]
+    _gateway01[IoT Gateway\n(gateway)]
+  end
+  subgraph _Cloud___Platform[Cloud / Platform]
+    _ingest01[Ingestion Service\n(cloud_service)]
+    _iot_hub01[IoT Hub\n(cloud_service)]
+    _datalake01[Data Lake\n(datastore)]
+    _portal01([Admin Portal\n(portal)])
+  end
+  %% Data flows
+  _device01 -- "MQTT over TLS" --> _gateway01
+  _gateway01 -- "HTTPS" --> _ingest01
+  _ingest01 -- "Private Link" --> _datalake01
+  _iot_hub01 -- "Event Routing" --> _datalake01
+  _portal01 -- "HTTPS" --> _ingest01
+  style _Field___Device fill:#f2f7ff,stroke:#999,stroke-width:1px
+  style _Edge___Gateway fill:#f7fff2,stroke:#999,stroke-width:1px
+  style _Cloud___Platform fill:#fff7f2,stroke:#999,stroke-width:1px</pre>
+  </div>
+
+  <div class="threats">
+    <h3>Threats by category</h3>
+    <h4><span class='chip Device-Level'>Device-Level</span></h4>
+<div><strong>Firmware vulnerabilities</strong> <em>(asset: Field Device)</em><br/>Unsigned or vulnerable firmware enables persistence and device takeover.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Secure Boot with verified boot chain</li><li>Signed firmware and strict versioning</li><li>Secure OTA updates with rollback protection</li><li>Regular vulnerability scanning and SBOM management</li></ul></div>
+<div><strong>Physical tampering</strong> <em>(asset: Field Device)</em><br/>Adversaries can access debug ports, extract secrets, or alter hardware.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Tamper-evident and tamper-resistant enclosures</li><li>Disable/lock debug interfaces in production</li><li>Secure elements/TPM for key storage</li><li>Tamper sensors with alerting and zeroization</li></ul></div>
+<div><strong>Physical tampering</strong> <em>(asset: IoT Gateway)</em><br/>Adversaries can access debug ports, extract secrets, or alter hardware.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Tamper-evident and tamper-resistant enclosures</li><li>Disable/lock debug interfaces in production</li><li>Secure elements/TPM for key storage</li><li>Tamper sensors with alerting and zeroization</li></ul></div>
+<h4><span class='chip Data'>Data</span></h4>
+<div><strong>Privacy breaches</strong> <em>(asset: IoT Gateway)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(asset: IoT Gateway)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(asset: Ingestion Service)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(asset: Ingestion Service)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(asset: IoT Hub)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(asset: IoT Hub)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(asset: Data Lake)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(asset: Data Lake)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(flow: Telemetry)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(flow: Telemetry)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(flow: Ingest API)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(flow: Ingest API)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(flow: Store)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(flow: Store)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(flow: Events)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(flow: Events)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<div><strong>Privacy breaches</strong> <em>(flow: Management)</em><br/>Sensitive data exposure or over-collection enabling re-identification.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Data minimization and purpose limitation</li><li>Field-level encryption and tokenization</li><li>Access controls with least privilege</li><li>Anonymization/pseudonymization where possible</li></ul></div>
+<div><strong>Data integrity compromise</strong> <em>(flow: Management)</em><br/>Unauthorized or undetected modification of data in transit or at rest.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Cryptographic integrity (HMAC, signatures)</li><li>Immutable/append-only logs and versioned storage</li><li>Checksums and validation on ingestion</li><li>Strong change control and auditing</li></ul></div>
+<h4><span class='chip Platform'>Platform</span></h4>
+<div><strong>Cloud infrastructure vulnerabilities</strong> <em>(asset: Ingestion Service)</em><br/>Misconfiguration or unpatched components enabling privilege escalation or breach.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Least-privilege IAM and role isolation</li><li>Network segmentation and private endpoints</li><li>Continuous patching and managed services</li><li>CSPM, SIEM, and runtime monitoring</li></ul></div>
+<div><strong>Cloud infrastructure vulnerabilities</strong> <em>(asset: IoT Hub)</em><br/>Misconfiguration or unpatched components enabling privilege escalation or breach.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Least-privilege IAM and role isolation</li><li>Network segmentation and private endpoints</li><li>Continuous patching and managed services</li><li>CSPM, SIEM, and runtime monitoring</li></ul></div>
+<div><strong>Cloud infrastructure vulnerabilities</strong> <em>(asset: Data Lake)</em><br/>Misconfiguration or unpatched components enabling privilege escalation or breach.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Least-privilege IAM and role isolation</li><li>Network segmentation and private endpoints</li><li>Continuous patching and managed services</li><li>CSPM, SIEM, and runtime monitoring</li></ul></div>
+<div><strong>Cloud infrastructure vulnerabilities</strong> <em>(asset: Admin Portal)</em><br/>Misconfiguration or unpatched components enabling privilege escalation or breach.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Least-privilege IAM and role isolation</li><li>Network segmentation and private endpoints</li><li>Continuous patching and managed services</li><li>CSPM, SIEM, and runtime monitoring</li></ul></div>
+<h4><span class='chip Communication'>Communication</span></h4>
+<div><strong>Eavesdropping</strong> <em>(flow: Telemetry)</em><br/>Unencrypted or poorly configured links expose data in transit.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>TLS 1.2+ with modern ciphers</li><li>Mutual TLS for device authentication</li><li>WPA3 or cellular with SIM-based auth</li><li>Rotate keys; avoid static shared secrets</li></ul></div>
+<div><strong>Man-in-the-middle</strong> <em>(flow: Telemetry)</em><br/>Traffic interception or impersonation between nodes.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Certificate pinning and strict hostname verification</li><li>Mutual TLS and hardware-backed keys</li><li>Use message authentication (HMAC/MAC) for app-layer integrity</li><li>Replay protection (nonces, timestamps)</li></ul></div>
+<div><strong>Eavesdropping</strong> <em>(flow: Ingest API)</em><br/>Unencrypted or poorly configured links expose data in transit.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>TLS 1.2+ with modern ciphers</li><li>Mutual TLS for device authentication</li><li>WPA3 or cellular with SIM-based auth</li><li>Rotate keys; avoid static shared secrets</li></ul></div>
+<div><strong>Man-in-the-middle</strong> <em>(flow: Ingest API)</em><br/>Traffic interception or impersonation between nodes.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Certificate pinning and strict hostname verification</li><li>Mutual TLS and hardware-backed keys</li><li>Use message authentication (HMAC/MAC) for app-layer integrity</li><li>Replay protection (nonces, timestamps)</li></ul></div>
+<div><strong>Eavesdropping</strong> <em>(flow: Store)</em><br/>Unencrypted or poorly configured links expose data in transit.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>TLS 1.2+ with modern ciphers</li><li>Mutual TLS for device authentication</li><li>WPA3 or cellular with SIM-based auth</li><li>Rotate keys; avoid static shared secrets</li></ul></div>
+<div><strong>Man-in-the-middle</strong> <em>(flow: Store)</em><br/>Traffic interception or impersonation between nodes.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Certificate pinning and strict hostname verification</li><li>Mutual TLS and hardware-backed keys</li><li>Use message authentication (HMAC/MAC) for app-layer integrity</li><li>Replay protection (nonces, timestamps)</li></ul></div>
+<div><strong>Eavesdropping</strong> <em>(flow: Events)</em><br/>Unencrypted or poorly configured links expose data in transit.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>TLS 1.2+ with modern ciphers</li><li>Mutual TLS for device authentication</li><li>WPA3 or cellular with SIM-based auth</li><li>Rotate keys; avoid static shared secrets</li></ul></div>
+<div><strong>Man-in-the-middle</strong> <em>(flow: Events)</em><br/>Traffic interception or impersonation between nodes.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Certificate pinning and strict hostname verification</li><li>Mutual TLS and hardware-backed keys</li><li>Use message authentication (HMAC/MAC) for app-layer integrity</li><li>Replay protection (nonces, timestamps)</li></ul></div>
+<div><strong>Eavesdropping</strong> <em>(flow: Management)</em><br/>Unencrypted or poorly configured links expose data in transit.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>TLS 1.2+ with modern ciphers</li><li>Mutual TLS for device authentication</li><li>WPA3 or cellular with SIM-based auth</li><li>Rotate keys; avoid static shared secrets</li></ul></div>
+<div><strong>Man-in-the-middle</strong> <em>(flow: Management)</em><br/>Traffic interception or impersonation between nodes.</div>
+<div class='mitigations'><em>Mitigations:</em><ul><li>Certificate pinning and strict hostname verification</li><li>Mutual TLS and hardware-backed keys</li><li>Use message authentication (HMAC/MAC) for app-layer integrity</li><li>Replay protection (nonces, timestamps)</li></ul></div>
+  </div>
+
+  <script>mermaid.initialize({ startOnLoad: true, securityLevel: 'loose' });</script>
+</body>
+</html>
