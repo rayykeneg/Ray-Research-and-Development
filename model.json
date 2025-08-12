@@ -1,0 +1,19 @@
+{
+  "title": "IoT Threat Model (Sample)",
+  "boundaries": ["Field / Device", "Edge / Gateway", "Cloud / Platform"],
+  "assets": [
+    {"id": "device01", "name": "Field Device", "type": "device", "boundary": "Field / Device", "shape": "stadium"},
+    {"id": "gateway01", "name": "IoT Gateway", "type": "gateway", "boundary": "Edge / Gateway"},
+    {"id": "ingest01", "name": "Ingestion Service", "type": "cloud_service", "boundary": "Cloud / Platform"},
+    {"id": "iot_hub01", "name": "IoT Hub", "type": "cloud_service", "boundary": "Cloud / Platform"},
+    {"id": "datalake01", "name": "Data Lake", "type": "datastore", "boundary": "Cloud / Platform"},
+    {"id": "portal01", "name": "Admin Portal", "type": "portal", "boundary": "Cloud / Platform", "shape": "stadium"}
+  ],
+  "flows": [
+    {"from": "device01", "to": "gateway01", "protocol": "MQTT over TLS", "label": "Telemetry"},
+    {"from": "gateway01", "to": "ingest01", "protocol": "HTTPS", "label": "Ingest API"},
+    {"from": "ingest01", "to": "datalake01", "protocol": "Private Link", "label": "Store"},
+    {"from": "iot_hub01", "to": "datalake01", "protocol": "Event Routing", "label": "Events"},
+    {"from": "portal01", "to": "ingest01", "protocol": "HTTPS", "label": "Management"}
+  ]
+}
